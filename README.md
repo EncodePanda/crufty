@@ -4,6 +4,23 @@
 artifacts and cleans them up safely. It supports many common languages and build
 systems including Rust, Node.js, Python, Java, and more.
 
+## Usage
+
+```
+> crafty help
+A command-line tool that scans projects for large build artifacts and cleans them up
+
+Usage: crufty <COMMAND>
+
+Commands:
+  scan  Scan for build artifacts in the current directory
+  help  Print this message or the help of the given subcommand(s)
+
+Options:
+  -h, --help     Print help
+  -V, --version  Print version
+```
+
 ## Usage example
 
 ### Basic Scan
