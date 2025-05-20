@@ -1,7 +1,7 @@
 use clap::Parser;
 use console::{style, Term};
 use crufty::cli::{Cli, Commands};
-use crufty::fetch_artifacts;
+use crufty::{fetch_artifacts, Size};
 use std::env;
 use std::io;
 use std::process;
@@ -33,11 +33,16 @@ fn scan() -> io::Result<()> {
     for (i, artifact) in artifacts.iter().enumerate() {
       let rel_path =
         artifact.path.strip_prefix(&path).unwrap_or(&artifact.path);
+      let size_display = match &artifact.size {
+        Size::UnknownSize => style(format!("unknown")).yellow(),
+        Size::KnownSize(_) => style(format!("{}", artifact.size)).green(),
+      };
+
       term.write_line(&format!(
         "[{}] {:<30} {}",
         i + 1,
         style(format!("./{}", rel_path.display())).bold(),
-        style(format!("unknown size")).yellow()
+        size_display
       ))?;
     }
     Ok(())
