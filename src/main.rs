@@ -1,7 +1,8 @@
 use clap::Parser;
 use console::{style, Term};
 use crufty::cli::{Cli, Commands};
-use crufty::{fetch_artifacts, Size};
+use crufty::fetcher::fetch_artifacts;
+use crufty::types::Size;
 use std::env;
 use std::io;
 use std::process;
