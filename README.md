@@ -1,3 +1,5 @@
+[![Rust](https://github.com/EncodePanda/crufty/actions/workflows/rust.yml/badge.svg?branch=main)](https://github.com/EncodePanda/crufty/actions/workflows/rust.yml)
+
 # Crafty
 
 **Crafty** is a command-line tool that scans your projects for large build
