@@ -25,8 +25,23 @@ fn scan() -> io::Result<()> {
   term
     .write_line(&format!("[+] Scanning: {}", style(path.display()).bold()))?;
   term.write_line("")?;
-  let _ = fetch_artifacts(&path);
-  Ok(())
+  let artifacts = fetch_artifacts(&path);
+
+  if artifacts.is_empty() {
+    term.write_line("No significant build artifacts found.")
+  } else {
+    for (i, artifact) in artifacts.iter().enumerate() {
+      let rel_path =
+        artifact.path.strip_prefix(&path).unwrap_or(&artifact.path);
+      term.write_line(&format!(
+        "[{}] {:<30} {}",
+        i + 1,
+        style(format!("./{}", rel_path.display())).bold(),
+        style(format!("unknown size")).yellow()
+      ))?;
+    }
+    Ok(())
+  }
 }
 
 fn exit_unrecoverable(_err: io::Error) {
