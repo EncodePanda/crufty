@@ -4,6 +4,16 @@ use walkdir::WalkDir;
 
 use super::types::{ArtifactCandidate, Size};
 
+pub fn total_size(artifacts: &[ArtifactCandidate]) -> Size {
+  let total = artifacts
+    .iter()
+    .fold(0, |acc, artifact| match &artifact.size {
+      Size::UnknownSize => acc,
+      Size::KnownSize(size) => acc + size,
+    });
+  Size::KnownSize(total)
+}
+
 pub fn estimate(artifact: &mut ArtifactCandidate) -> &ArtifactCandidate {
   let size = estimate_path(&artifact.path);
   artifact.size = size;
@@ -18,7 +28,7 @@ fn estimate_path(path: &PathBuf) -> Size {
 }
 
 fn calculate_dir_size(path: &PathBuf) -> std::io::Result<u64> {
-  let mut total_size = 0;
+  let mut total = 0;
 
   for entry in WalkDir::new(path)
     .follow_links(false)
@@ -27,11 +37,11 @@ fn calculate_dir_size(path: &PathBuf) -> std::io::Result<u64> {
     .filter(|e| e.file_type().is_file())
   {
     if let Ok(metadata) = fs::metadata(entry.path()) {
-      total_size += metadata.len();
+      total += metadata.len();
     }
   }
 
-  Ok(total_size)
+  Ok(total)
 }
 
 #[cfg(test)]
