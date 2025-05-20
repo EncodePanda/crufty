@@ -6,7 +6,9 @@ edition = "2024"
 [dependencies]
 clap = { version = "4.4", features = ["derive"] }
 console = "0.15"
+dialoguer = "0.11.0"
 globset = "0.4"
+indicatif = "0.17.11"
 walkdir = "2.4"
 
 [dev-dependencies]
