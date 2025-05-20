@@ -1,15 +1,15 @@
 [![Rust](https://github.com/EncodePanda/crufty/actions/workflows/rust.yml/badge.svg?branch=main)](https://github.com/EncodePanda/crufty/actions/workflows/rust.yml)
 
-# Crafty
+# Crufty
 
-**Crafty** is a command-line tool that scans your projects for large build
+**Crufty** is a command-line tool that scans your projects for large build
 artifacts and cleans them up safely. It supports many common languages and build
 systems including Rust, Node.js, Python, Java, and more.
 
 ## Usage
 
 ```
-> crafty help
+> crufty help
 A command-line tool that scans projects for large build artifacts and cleans them up
 
 Usage: crufty <COMMAND>
@@ -28,7 +28,7 @@ Options:
 ### Basic Scan
 
 ```
-> crafty scan
+> crufty scan
 
 [+] Scanning: /home/encodepanda/Projects
 
