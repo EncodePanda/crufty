@@ -95,4 +95,44 @@ mod tests {
 
     temp.close().unwrap();
   }
+
+  #[test]
+  fn test_where_scanned_folder_has_three_rust_projects() {
+    // given
+    let temp = TempDir::new().unwrap();
+    let project1 = mk_subpath(&temp, "project1");
+    mk_rust_project(&project1);
+    let project2 = mk_subpath(&temp, "project2");
+    mk_rust_project(&project2);
+    let project3 = mk_subpath(&temp, "work/project3");
+    mk_rust_project(&project3);
+
+    // when
+    let mut results = fetch_artifacts(&temp.to_path_buf());
+
+    // then
+    assert_eq!(results.len(), 3, "Expected exactly three artifacts");
+    results.sort();
+
+    let expected_path_1 =
+      temp.child("project1").child("target").path().to_path_buf();
+    let expected_1 = ArtifactCandidate::new(expected_path_1);
+    assert_eq!(&results[0], &expected_1);
+
+    let expected_path_2 =
+      temp.child("project2").child("target").path().to_path_buf();
+    let expected_2 = ArtifactCandidate::new(expected_path_2);
+    assert_eq!(&results[1], &expected_2);
+
+    let expected_path_3 = temp
+      .child("work")
+      .child("project3")
+      .child("target")
+      .path()
+      .to_path_buf();
+    let expected_3 = ArtifactCandidate::new(expected_path_3);
+    assert_eq!(&results[2], &expected_3);
+
+    temp.close().unwrap();
+  }
 }
