@@ -6,7 +6,7 @@ use ignore::WalkBuilder;
 
 pub mod cli;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct ArtifactCandidate {
   pub path: PathBuf,
   size: Option<u64>,
@@ -15,6 +15,18 @@ pub struct ArtifactCandidate {
 impl ArtifactCandidate {
   fn new(path: PathBuf) -> Self {
     ArtifactCandidate { path, size: None }
+  }
+}
+
+impl Ord for ArtifactCandidate {
+  fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+    self.path.cmp(&other.path)
+  }
+}
+
+impl PartialOrd for ArtifactCandidate {
+  fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+    Some(self.cmp(other))
   }
 }
 
