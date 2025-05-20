@@ -1,10 +1,9 @@
 use clap::Parser;
 use console::{style, Term};
 use crufty::cli::{Cli, Commands};
-use crufty::estimator::estimate;
+use crufty::estimator::{estimate, total_size};
 use crufty::fetcher::fetch_artifacts;
-use crufty::types::Size;
-use crufty::ui;
+use crufty::ui::{self, style_size};
 use std::env;
 use std::io;
 use std::process;
@@ -46,24 +45,25 @@ fn scan() -> io::Result<()> {
     for (i, artifact) in artifacts.iter().enumerate() {
       let rel_path =
         artifact.path.strip_prefix(&path).unwrap_or(&artifact.path);
-      let size_display = match &artifact.size {
-        Size::UnknownSize => style(format!("{}", artifact.size)).yellow(),
-        Size::KnownSize(_) => style(format!("{}", artifact.size)).green(),
-      };
 
       term.write_line(&format!(
-        "[{}] {:<30} {}",
+        "[{}] {:<36} {}",
         i + 1,
         style(format!("./{}", rel_path.display())).bold(),
-        size_display
+        style_size(&artifact.size)
       ))?;
     }
 
+    let total = total_size(&artifacts);
+
     term.write_line("")?;
     term.write_line(&format!(
-      "{} Scan completed successfully",
-      style("✓").green()
+      "Total size: {} in {} directories",
+      style_size(&total),
+      style(format!("{}", artifacts.len())).bold()
     ))?;
+
+    term.write_line("Use `crafty clean` to remove these safely")?;
 
     Ok(())
   }
