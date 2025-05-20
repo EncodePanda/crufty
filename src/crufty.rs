@@ -1,6 +1,9 @@
 #![allow(dead_code)]
 use std::path::PathBuf;
 
+use globset::{Glob, GlobSetBuilder};
+use ignore::WalkBuilder;
+
 pub mod cli;
 
 #[derive(Debug, PartialEq)]
@@ -15,8 +18,29 @@ impl ArtifactCandidate {
   }
 }
 
-pub fn fetch_artifacts(_path: &PathBuf) -> Vec<ArtifactCandidate> {
-  vec![]
+pub fn fetch_artifacts(root_path: &PathBuf) -> Vec<ArtifactCandidate> {
+  let mut builder = GlobSetBuilder::new();
+  // FIX-ME hardcoded pattern for Rust
+  builder.add(Glob::new("**/target").unwrap());
+
+  let globset = builder.build().unwrap();
+
+  WalkBuilder::new(root_path)
+    .git_ignore(false)
+    .build()
+    .filter_map(|entry_result| match entry_result {
+      Err(_) => None,
+      Ok(entry) if !entry.path().is_dir() => None,
+      Ok(entry) => {
+        let path = entry.into_path();
+        let rel_path = path.strip_prefix(root_path).ok()?;
+        match globset.is_match(&rel_path) {
+          true => Some(ArtifactCandidate::new(path)),
+          false => None,
+        }
+      }
+    })
+    .collect()
 }
 
 #[cfg(test)]
@@ -42,7 +66,6 @@ mod tests {
   }
 
   #[test]
-  #[ignore]
   fn test_simple_rust_project_being_scanned_folder() {
     // given
     let temp = TempDir::new().unwrap();

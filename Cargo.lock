@@ -189,6 +189,9 @@ dependencies = [
  "assert_fs",
  "clap",
  "console",
+ "globset",
+ "ignore",
+ "walkdir",
 ]
 
 [[package]]
