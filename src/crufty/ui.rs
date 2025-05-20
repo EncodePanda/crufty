@@ -16,6 +16,19 @@ pub fn create_progress_bar(total: u64) -> ProgressBar {
   pb
 }
 
+/// Creates and returns a spinner for showing progress on a single operation.
+pub fn create_spinner(message: &str) -> ProgressBar {
+  let sp = ProgressBar::new_spinner();
+  let spinner_style =
+    ProgressStyle::with_template("{prefix:.bold.dim} {spinner} {wide_msg}")
+      .unwrap()
+      .tick_chars("⠁⠂⠄⡀⢀⠠⠐⠈");
+  sp.set_style(spinner_style);
+  sp.set_message(message.to_string());
+  sp.enable_steady_tick(std::time::Duration::from_millis(120));
+  sp
+}
+
 pub fn style_size(size: &Size) -> StyledObject<String> {
   let mb = 1024 * 1024;
   match size {

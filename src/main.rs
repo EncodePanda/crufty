@@ -26,10 +26,13 @@ fn scan() -> io::Result<()> {
   let path = env::current_dir()?;
   term
     .write_line(&format!("[+] Scanning: {}", style(path.display()).bold()))?;
-  term.write_line("")?;
 
   // Fetch artifacts
+  let spinner = ui::create_spinner("collecting artifacts");
   let mut artifacts = fetch_artifacts(&path);
+  spinner.finish_and_clear();
+
+  term.write_line("")?;
 
   if artifacts.is_empty() {
     term.write_line("No significant build artifacts found.")
