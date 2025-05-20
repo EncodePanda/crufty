@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 
 use globset::{Glob, GlobSetBuilder};
-use ignore::WalkBuilder;
+use walkdir::WalkDir;
 
 use super::types::ArtifactCandidate;
 
@@ -12,9 +12,8 @@ pub fn fetch_artifacts(root_path: &PathBuf) -> Vec<ArtifactCandidate> {
 
   let globset = builder.build().unwrap();
 
-  WalkBuilder::new(root_path)
-    .git_ignore(false)
-    .build()
+  WalkDir::new(root_path)
+    .into_iter()
     .filter_map(|entry_result| match entry_result {
       Err(_) => None,
       Ok(entry) if !entry.path().is_dir() => None,
