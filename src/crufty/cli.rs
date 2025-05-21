@@ -13,6 +13,8 @@ pub struct Cli {
 pub enum Commands {
   /// Scan for build artifacts in the current directory
   Scan,
+  /// Clean all build artifacts in the current directory
+  Clean,
 }
 
 #[cfg(test)]
