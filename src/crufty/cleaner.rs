@@ -1,10 +1,10 @@
 #![allow(dead_code)]
 use fs_extra::dir::remove;
 
-use super::types::{ArtifactCandidate, Size};
+use super::types::ArtifactCandidate;
 
 pub enum CleanupResult {
-  Successful { size: Size },
+  Successful,
   DoesNotExists,
   Unsuccessful,
 }
@@ -15,9 +15,7 @@ pub fn clean(artifact: &ArtifactCandidate) -> CleanupResult {
   match path.exists() {
     false => CleanupResult::DoesNotExists,
     true => match remove(path) {
-      Ok(_) => CleanupResult::Successful {
-        size: artifact.size.clone(),
-      },
+      Ok(_) => CleanupResult::Successful,
       Err(_) => CleanupResult::Unsuccessful,
     },
   }
