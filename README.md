@@ -9,21 +9,21 @@ systems including Rust, Node.js, Python, Java, and more.
 ## Usage
 
 ```
-> crufty help
 A command-line tool that scans projects for large build artifacts and cleans them up
 
 Usage: crufty <COMMAND>
 
 Commands:
-  scan  Scan for build artifacts in the current directory
-  help  Print this message or the help of the given subcommand(s)
+  scan   Scan for build artifacts in the current directory
+  clean  Clean all build artifacts in the current directory
+  help   Print this message or the help of the given subcommand(s)
 
 Options:
   -h, --help     Print help
   -V, --version  Print version
 ```
 
-## Usage example
+## Usage examples
 
 ### Basic Scan
 
@@ -38,4 +38,12 @@ Options:
 
 Total size: 1.4 GB in 4 directories
 Use `crufty clean` to remove these safely
+```
+
+### Clean-up
+
+```
+> crufty clean
+
+4 directories were removed, restoring 1.4 GB
 ```
