@@ -4,13 +4,38 @@ use walkdir::WalkDir;
 
 use super::types::{ArtifactCandidate, Size};
 
-pub fn total_size(artifacts: &[ArtifactCandidate]) -> Size {
-  let total = artifacts
+pub trait Sizable {
+  fn get_size(&self) -> &Size;
+  fn bytes(&self) -> &u64 {
+    match self.get_size() {
+      Size::UnknownSize => &0,
+      Size::KnownSize(b) => b,
+    }
+  }
+}
+
+impl Sizable for ArtifactCandidate {
+  fn get_size(&self) -> &Size {
+    &self.size
+  }
+}
+
+impl Sizable for Size {
+  fn get_size(&self) -> &Size {
+    &self
+  }
+}
+
+impl Sizable for &Size {
+  fn get_size(&self) -> &Size {
+    self
+  }
+}
+
+pub fn total_size(sizables: &[impl Sizable]) -> Size {
+  let total = sizables
     .iter()
-    .fold(0, |acc, artifact| match &artifact.size {
-      Size::UnknownSize => acc,
-      Size::KnownSize(size) => acc + size,
-    });
+    .fold(0, |acc, artifact| acc + artifact.bytes());
   Size::KnownSize(total)
 }
 
