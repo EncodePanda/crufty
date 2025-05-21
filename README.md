@@ -29,13 +29,13 @@ Options:
 
 ```
 > crufty scan
+[+] Scanning: /Users/encodepanda/projects
 
-[+] Scanning: /home/encodepanda/Projects
+[1] ./crufty/target                      419.6 MB
+[2] ./too-many-lists/target              33.9 MB
+[3] ./rust-web/target                    977.7 MB
+[4] ./rshttp/target                      16.3 MB
 
-[1] ./rust-api/target/            530 MB
-[2] ./web-client/node_modules/    1.9 GB
-[3] ./ml-notebook/.venv/          450 MB
-
-Total: 2.88 GB in 3 directories
-Use `crafty clean` to remove these safely.
+Total size: 1.4 GB in 4 directories
+Use `crufty clean` to remove these safely
 ```
