@@ -6,6 +6,8 @@
 artifacts and cleans them up safely. It supports many common languages and build
 systems including Rust, Node.js, Python, Java, and more.
 
+[![asciicast](https://asciinema.org/a/720481.svg)](https://asciinema.org/a/720481)
+
 ## Usage
 
 ```
