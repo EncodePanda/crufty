@@ -1,3 +1,4 @@
+use crate::crufty::artifact_type::ArtifactType;
 use std::fmt;
 use std::path::PathBuf;
 
@@ -26,18 +27,45 @@ impl fmt::Display for Size {
   }
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone)]
 pub struct ArtifactCandidate {
   pub path: PathBuf,
   pub size: Size,
+  pub art_type: Option<ArtifactType>,
+}
+
+pub struct ArtifactCandidateBuilder {
+  path: PathBuf,
+  size: Size,
+  art_type: Option<ArtifactType>,
+}
+
+impl ArtifactCandidateBuilder {
+  pub fn new(path: PathBuf) -> Self {
+    ArtifactCandidateBuilder {
+      path,
+      size: Size::UnknownSize,
+      art_type: None,
+    }
+  }
+
+  pub fn art_type(mut self, art_type: Option<ArtifactType>) -> Self {
+    self.art_type = art_type;
+    self
+  }
+
+  pub fn build(self) -> ArtifactCandidate {
+    ArtifactCandidate {
+      path: self.path,
+      size: self.size,
+      art_type: self.art_type,
+    }
+  }
 }
 
 impl ArtifactCandidate {
-  pub fn new(path: PathBuf) -> Self {
-    ArtifactCandidate {
-      path,
-      size: Size::UnknownSize,
-    }
+  pub fn builder(path: PathBuf) -> ArtifactCandidateBuilder {
+    ArtifactCandidateBuilder::new(path)
   }
 }
 

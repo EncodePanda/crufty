@@ -35,7 +35,8 @@ fn scan() -> io::Result<()> {
     .write_line(&format!("[+] Scanning: {}", style(path.display()).bold()))?;
 
   let spinner = ui::create_spinner("collecting artifacts");
-  let mut artifacts = fetch_artifacts(&path, artifact_type::builtin().to_vec());
+  let mut artifacts =
+    fetch_artifacts(&path, &artifact_type::builtin().to_vec());
   spinner.finish_and_clear();
 
   term.write_line("")?;
@@ -83,7 +84,8 @@ fn clean() -> io::Result<()> {
   let path = env::current_dir()?;
 
   let spinner = ui::create_spinner("collecting artifacts");
-  let mut artifacts = fetch_artifacts(&path, artifact_type::builtin().to_vec());
+  let mut artifacts =
+    fetch_artifacts(&path, &artifact_type::builtin().to_vec());
   spinner.finish_and_clear();
 
   if artifacts.is_empty() {

@@ -80,7 +80,7 @@ mod tests {
     // given
     let temp = TempDir::new().unwrap();
     let path = temp.path().to_path_buf();
-    let mut artifact = ArtifactCandidate::new(path);
+    let mut artifact = ArtifactCandidate::builder(path).build();
     // when
     let artifact = estimate(&mut artifact);
     // then
@@ -96,7 +96,7 @@ mod tests {
     let file = temp.child("test.txt");
     file.write_str("Hello, world!").unwrap();
     let path = temp.path().to_path_buf();
-    let mut artifact = ArtifactCandidate::new(path);
+    let mut artifact = ArtifactCandidate::builder(path).build();
     // when
     let artifact = estimate(&mut artifact);
     // then
