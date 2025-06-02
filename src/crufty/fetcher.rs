@@ -7,7 +7,7 @@ use walkdir::WalkDir;
 use super::types::ArtifactCandidate;
 
 fn mk_global_set(
-  artifact_types: Vec<ArtifactType>,
+  artifact_types: &Vec<ArtifactType>,
 ) -> Result<GlobSet, globset::Error> {
   let mut builder = GlobSetBuilder::new();
   for art_type in artifact_types {
@@ -39,7 +39,7 @@ fn detect_artifact_type(
 
 pub fn fetch_artifacts(
   root_path: &PathBuf,
-  artifact_types: Vec<ArtifactType>,
+  artifact_types: &Vec<ArtifactType>,
 ) -> Vec<ArtifactCandidate> {
   match mk_global_set(artifact_types) {
     Err(_) => vec![],
@@ -52,7 +52,16 @@ pub fn fetch_artifacts(
           let path = entry.into_path();
           let rel_path = path.strip_prefix(root_path).ok()?;
           match globset.is_match(&rel_path) {
-            true => Some(ArtifactCandidate::new(path)),
+            true => {
+              let parent_path = path.parent()?;
+              let art_type = detect_artifact_type(
+                &parent_path.to_path_buf(),
+                &artifact_types,
+              );
+              let candidate =
+                ArtifactCandidate::builder(path).art_type(art_type).build();
+              Some(candidate)
+            }
             false => None,
           }
         }
@@ -85,7 +94,11 @@ mod tests {
   }
 
   fn custom_project(pattern: &'static str) -> Vec<ArtifactType> {
-    vec![ArtifactType::Custom { pattern }]
+    vec![ArtifactType::Custom {
+      pattern,
+      name: "Custom",
+      files: &[],
+    }]
   }
 
   fn mk_rust_project<P: PathChild>(base: &P) {
@@ -100,18 +113,20 @@ mod tests {
     mk_rust_project(&temp);
 
     // when we search for Rust artifacts
-    let results = fetch_artifacts(&temp.to_path_buf(), only_rust_projects());
+    let results = fetch_artifacts(&temp.to_path_buf(), &only_rust_projects());
 
     // then
     assert_eq!(results.len(), 1, "Expected exactly one artifact");
 
     let expected_path = temp.child("target").path().to_path_buf();
-    let expected = ArtifactCandidate::new(expected_path);
+    let expected = ArtifactCandidate::builder(expected_path)
+      .art_type(Some(ArtifactType::Rust))
+      .build();
     assert_eq!(&results[0], &expected);
 
     // when we search for projects other than Rust
     let results =
-      fetch_artifacts(&temp.to_path_buf(), custom_project("**/bla"));
+      fetch_artifacts(&temp.to_path_buf(), &custom_project("**/bla"));
     // then
     assert_eq!(results.len(), 0, "Expected zero artifacts");
 
@@ -131,7 +146,7 @@ mod tests {
 
     // when we search for Rust artifacts
     let mut results =
-      fetch_artifacts(&temp.to_path_buf(), only_rust_projects());
+      fetch_artifacts(&temp.to_path_buf(), &only_rust_projects());
 
     // then
     assert_eq!(results.len(), 3, "Expected exactly three artifacts");
@@ -139,12 +154,16 @@ mod tests {
 
     let expected_path_1 =
       temp.child("project1").child("target").path().to_path_buf();
-    let expected_1 = ArtifactCandidate::new(expected_path_1);
+    let expected_1 = ArtifactCandidate::builder(expected_path_1)
+      .art_type(Some(ArtifactType::Rust))
+      .build();
     assert_eq!(&results[0], &expected_1);
 
     let expected_path_2 =
       temp.child("project2").child("target").path().to_path_buf();
-    let expected_2 = ArtifactCandidate::new(expected_path_2);
+    let expected_2 = ArtifactCandidate::builder(expected_path_2)
+      .art_type(Some(ArtifactType::Rust))
+      .build();
     assert_eq!(&results[1], &expected_2);
 
     let expected_path_3 = temp
@@ -153,14 +172,54 @@ mod tests {
       .child("target")
       .path()
       .to_path_buf();
-    let expected_3 = ArtifactCandidate::new(expected_path_3);
+    let expected_3 = ArtifactCandidate::builder(expected_path_3)
+      .art_type(Some(ArtifactType::Rust))
+      .build();
     assert_eq!(&results[2], &expected_3);
 
     // when we search for projects other than Rust
     let results =
-      fetch_artifacts(&temp.to_path_buf(), custom_project("**/bla"));
+      fetch_artifacts(&temp.to_path_buf(), &custom_project("**/bla"));
     // then
     assert_eq!(results.len(), 0, "Expected zero artifacts");
+
+    temp.close().unwrap();
+  }
+
+  #[test]
+  fn test_custom_artifact_type_equivalent_to_rust() {
+    // given there is a single rust project in the folder
+    let temp = TempDir::new().unwrap();
+    mk_rust_project(&temp);
+
+    // when we search for Rust artifacts using built-in type
+    let rust_results =
+      fetch_artifacts(&temp.to_path_buf(), &only_rust_projects());
+
+    // when we search using Custom type with same pattern and files as Rust
+    let custom_rust_type = ArtifactType::Custom {
+      pattern: "**/target",
+      name: "CustomRust",
+      files: &["Cargo.toml"],
+    };
+    let custom_results =
+      fetch_artifacts(&temp.to_path_buf(), &vec![custom_rust_type]);
+
+    // then both should find the same artifact
+    assert_eq!(rust_results.len(), 1);
+    assert_eq!(custom_results.len(), 1);
+    assert_eq!(rust_results[0].path, custom_results[0].path);
+
+    // but the artifact types should be different
+    assert_eq!(rust_results[0].art_type, Some(ArtifactType::Rust));
+    assert_eq!(
+      custom_results[0]
+        .art_type
+        .as_ref()
+        .unwrap()
+        .artifact_type_name(),
+      "CustomRust"
+    );
 
     temp.close().unwrap();
   }
