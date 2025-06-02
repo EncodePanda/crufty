@@ -6,7 +6,8 @@
 artifacts and cleans them up safely. It supports many common languages and build
 systems including Rust, Node.js, Python, Java, and more.
 
-[![asciicast](https://asciinema.org/a/720481.svg)](https://asciinema.org/a/720481)
+![crufty](https://github.com/user-attachments/assets/4d937233-6311-4718-8f81-637023754865)
+
 
 ## Usage
 
@@ -52,7 +53,7 @@ Use `crufty clean` to remove these safely
 
 ## Install
 
-Currently we support install process solely via `crates.io`
+Currently, we support the install process solely via `crates.io`
 
 ```
 > cargo install crufty
