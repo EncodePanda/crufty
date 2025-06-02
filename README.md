@@ -49,3 +49,11 @@ Use `crufty clean` to remove these safely
 
 4 directories were removed, restoring 1.4 GB
 ```
+
+## Install
+
+Currently we support install process solely via `crates.io`
+
+```
+> cargo install crufty
+```
