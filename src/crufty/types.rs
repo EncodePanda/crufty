@@ -2,7 +2,7 @@ use crate::crufty::artifact_type::ArtifactType;
 use std::fmt;
 use std::path::PathBuf;
 
-#[derive(Debug, PartialEq, Eq, Clone)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum Size {
   UnknownSize,
   KnownSize(u64),
@@ -27,7 +27,7 @@ impl fmt::Display for Size {
   }
 }
 
-#[derive(Debug, PartialEq, Eq, Clone)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct ArtifactCandidate {
   pub path: PathBuf,
   pub size: Size,
