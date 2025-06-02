@@ -6,8 +6,7 @@ use super::types::Size;
 /// Creates and returns a configured progress bar for use in the application.
 pub fn create_progress_bar(total: u64) -> ProgressBar {
   let pb = ProgressBar::new(total);
-  let template =
-	"{spinner:.green} [{elapsed_precise}] [{bar:40.cyan/blue}] {pos}/{len} {msg}";
+  let template = "{spinner:.green} [{elapsed_precise}] [{bar:40.cyan/blue}] {pos}/{len} {msg}";
   let bar_style = ProgressStyle::default_bar()
     .template(template)
     .unwrap()
