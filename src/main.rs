@@ -56,10 +56,16 @@ fn scan() -> io::Result<()> {
       let rel_path =
         artifact.path.strip_prefix(&path).unwrap_or(&artifact.path);
 
+      let artifact_type_name = match &artifact.art_type {
+        Some(art_type) => art_type.artifact_type_name(),
+        None => "Unknown",
+      };
+
       term.write_line(&format!(
-        "[{}] {:<36} {}",
+        "[{}] {:<36} {:<8} {}",
         i + 1,
         style(format!("./{}", rel_path.display())).bold(),
+        style(format!("({})", artifact_type_name)).dim(),
         style_size(&artifact.size)
       ))?;
     }
