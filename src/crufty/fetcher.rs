@@ -16,6 +16,27 @@ fn mk_global_set(
   builder.build()
 }
 
+fn detect_artifact_type(
+  parent_path: &PathBuf,
+  artifact_types: &[ArtifactType],
+) -> Option<ArtifactType> {
+  match artifact_types {
+    [] => None,
+    [head, tail @ ..] => {
+      let recognized_files = head.recognized_files();
+      let all_files_present = recognized_files.iter().all(|file| {
+        let file_path = parent_path.join(file);
+        file_path.exists()
+      });
+
+      match all_files_present {
+        true => Some(head.clone()),
+        false => detect_artifact_type(parent_path, tail),
+      }
+    }
+  }
+}
+
 pub fn fetch_artifacts(
   root_path: &PathBuf,
   artifact_types: Vec<ArtifactType>,
