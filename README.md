@@ -6,7 +6,7 @@
 artifacts and cleans them up safely. It supports many common languages and build
 systems including Rust, Node.js, Python, Java, and more.
 
-![crufty](https://github.com/user-attachments/assets/4d937233-6311-4718-8f81-637023754865)
+![crufty](crufty.gif)
 
 
 ## Usage
