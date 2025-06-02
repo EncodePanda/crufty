@@ -71,7 +71,7 @@ fn scan() -> io::Result<()> {
       style(format!("{}", artifacts.len())).bold()
     ))?;
 
-    term.write_line("Use `crafty clean` to remove these safely")?;
+    term.write_line("Use `crufty clean` to remove these safely")?;
 
     Ok(())
   }
