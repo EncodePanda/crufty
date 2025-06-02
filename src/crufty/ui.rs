@@ -1,4 +1,4 @@
-use console::{style, StyledObject};
+use console::{StyledObject, style};
 use indicatif::{ProgressBar, ProgressStyle};
 
 use super::types::Size;

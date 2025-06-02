@@ -72,8 +72,8 @@ fn calculate_dir_size(path: &PathBuf) -> std::io::Result<u64> {
 #[cfg(test)]
 mod tests {
   use super::*;
-  use assert_fs::prelude::*;
   use assert_fs::TempDir;
+  use assert_fs::prelude::*;
 
   #[test]
   fn test_estimate_path_empty_dir() {
