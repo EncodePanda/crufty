@@ -4,6 +4,7 @@ pub enum ArtifactType {
   Rust,
   Scala,
   JavaMaven,
+  HaskellCabal,
   Custom {
     pattern: &'static str,
     name: &'static str,
@@ -11,11 +12,12 @@ pub enum ArtifactType {
   },
 }
 
-pub fn builtin() -> [ArtifactType; 3] {
+pub fn builtin() -> [ArtifactType; 4] {
   [
     ArtifactType::Rust,
     ArtifactType::Scala,
     ArtifactType::JavaMaven,
+    ArtifactType::HaskellCabal,
   ]
 }
 
@@ -25,6 +27,7 @@ impl ArtifactType {
       ArtifactType::Rust => "**/target",
       ArtifactType::Scala => "**/target",
       ArtifactType::JavaMaven => "**/target",
+      ArtifactType::HaskellCabal => "**/dist-newstyle",
       ArtifactType::Custom { pattern, .. } => pattern,
     }
   }
@@ -34,6 +37,7 @@ impl ArtifactType {
       ArtifactType::Rust => "Rust",
       ArtifactType::Scala => "Scala",
       ArtifactType::JavaMaven => "Java",
+      ArtifactType::HaskellCabal => "Haskell",
       ArtifactType::Custom { name, .. } => name,
     }
   }
@@ -43,6 +47,7 @@ impl ArtifactType {
       ArtifactType::Rust => vec!["Cargo.toml".to_string()],
       ArtifactType::Scala => vec!["build.sbt".to_string()],
       ArtifactType::JavaMaven => vec!["pom.xml".to_string()],
+      ArtifactType::HaskellCabal => vec![],
       ArtifactType::Custom { files, .. } => {
         files.iter().map(|s| s.to_string()).collect()
       }
