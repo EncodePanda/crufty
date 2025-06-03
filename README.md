@@ -12,7 +12,8 @@ systems including Rust, Node.js, Python, Java, and more.
 ## Usage
 
 ```
-A command-line tool that scans projects for large build artifacts and cleans them up
+> crufty --help
+A command-line tool that scans projects for large build artifacts and cleans them up safely
 
 Usage: crufty <COMMAND>
 
@@ -32,14 +33,15 @@ Options:
 
 ```
 > crufty scan
-[+] Scanning: /Users/encodepanda/projects
+[+] Scanning: /Users/encodepanda/projects/ttemp
 
-[1] ./crufty/target                      419.6 MB
-[2] ./too-many-lists/target              33.9 MB
-[3] ./rust-web/target                    977.7 MB
-[4] ./rshttp/target                      16.3 MB
+[1] ./crufty/target                      (Rust)   425.2 MB
+[2] ./sandbox/99-scala-problems/target   (Scala)  252.9 KB
+[3] ./rshttp/target                      (Rust)   16.3 MB
+[4] ./tutorials/too-many-lists/target    (Rust)   33.9 MB
+[5] ./tutorials/rust-web/target          (Rust)   977.7 MB
 
-Total size: 1.4 GB in 4 directories
+Total size: 1.4 GB in 5 directories
 Use `crufty clean` to remove these safely
 ```
 
@@ -48,7 +50,7 @@ Use `crufty clean` to remove these safely
 ```
 > crufty clean
 
-4 directories were removed, restoring 1.4 GB
+5 directories were removed, restoring 1.4 GB
 ```
 
 ## Install
