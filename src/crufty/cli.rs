@@ -15,6 +15,8 @@ pub enum Commands {
   Scan,
   /// Clean all build artifacts in the current directory
   Clean,
+  /// Show all built-in artifact types
+  ArtifactTypes,
 }
 
 #[cfg(test)]

@@ -25,6 +25,10 @@ fn main() {
       Err(err) => exit_unrecoverable(err),
       Ok(_) => {}
     },
+    Commands::ArtifactTypes => match artifact_types() {
+      Err(err) => exit_unrecoverable(err),
+      Ok(_) => {}
+    },
   }
 }
 
@@ -136,6 +140,17 @@ fn clean() -> io::Result<()> {
     ))?;
     Ok(())
   }
+}
+
+fn artifact_types() -> io::Result<()> {
+  let term = Term::stdout();
+  term.write_line("Built-in artifact types supported by crufty:")?;
+  for (i, artifact) in artifact_type::builtin().iter_mut().enumerate() {
+    term.write_line(&format!("[{}] {}", i + 1, artifact.artifact_type_name()))?;
+    term.write_line(&format!("  - Matches: {}", artifact.pattern()))?;
+    term.write_line(&format!("  - Recognized by: {}", artifact.recognized_files().join(", ")))?;
+  }
+  Ok(())
 }
 
 fn exit_unrecoverable(_err: io::Error) {
